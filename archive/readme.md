@@ -1,21 +1,36 @@
-**Flapping Toasters**  
-Developed by [Michael Edgcumbe](http://www.neocyde.net/) and [Eric Mika](http://ericmika.com) in March 2011.
-A final project for [ITP](http://itp.nyu.edu/itp/)'s [3D Sensing and Visualization class](http://3dsav.blogspot.com/).
+> [!NOTE]
+>
+> This `/archive` folder preserves a copy of the original `readme.md` and project files from the 2011 C++ [openFrameworks](https://openframeworks.cc/) implementation of the Flapping Toasters project.
+>
+> See the [parent directory](../) for the December 2025 web re-implementation.
 
-**Interaction**  
+---
+
+# Flapping Toasters
+
+Developed by [Michael Edgcumbe](https://noisederived.com/) and [Eric Mika](https://ericmika.com) in March 2011.
+
+A final project for [ITP](https://itp.nyu.edu/itp/)'s [3D Sensing and Visualization class](https://3dsav.blogspot.com/).
+
+## Interaction
+
 You embody a flying toaster. Strike the psi pose to get calibrated, and then start flapping. Tilt in either direction to do a barrel roll. Clap to release toast. Supports multiple players.
 
-**Interface**  
-Tab toggles the GUI  
-K toggles the Kinect window  
-F toggle full screen mode
+## Interface
 
-**Links**  
-[Process Blog Post](http://frontiernerds.com/flapping-toasters)  
-[Video](http://vimeo.com/kitschpatrol/flapping-toasters)  
-[The Scarlet S](http://frontiernerds.com/scarlet-s)  
+- <kbd>tab</kbd> toggles the GUI
 
-**Notes**  
+- <kbd>K</kbd> toggles the Kinect window
+
+- <kbd>F</kbd> toggle full screen mode
+
+## Links
+
+- [Process Blog Post](https://frontiernerds.com/flapping-toasters)
+- [Video](https://vimeo.com/22032605)
+- [The Scarlet S](https://frontiernerds.com/scarlet-s)
+
+## Notes
 
 - Uses a Kinect + OpenNI skeleton tracking to detect arm flapping.
 
@@ -23,7 +38,7 @@ F toggle full screen mode
 
 - Compiled against [gameoverhack's fork of ofxOpenNI](https://github.com/gameoverhack/ofxOpenNI/commit/a1ec3ffea09bdbd644e57cc9f5c2a1c20a65f02c)
 
-- Inclues ofxControlPanel, which requires the ofxDirList addon.
+- Vendors [ofxControlPanel](https://github.com/ofTheo/ofxControlPanel), which requires the ofxDirList addon.
 
 - Includes some of the new 3D convenience functions from OF 007, although they aren't put to use. See `src/utils/ofx3dGraphics.h`.
 
@@ -37,7 +52,7 @@ F toggle full screen mode
 
 - Should work on Linux / Windows, but I haven't tested and don't have IDE project files for those platforms. Sorry.
 
-**Problems**  
+**Problems**
 
 - Sometimes ofxOpenNI freezes the keyboard on my laptop. External keyboards work fine. The rest of the machine continues to work fine.
 
@@ -45,9 +60,9 @@ F toggle full screen mode
 
 - Initial wing flapping animation is glitchy until the flap-detection system has enough data to automatically calibrate itself.
 
-**Thanks**  
-Thanks to [Kyle McDonald](http://kylemcdonald.net/) and [Zach Lieberman](http://thesystemis.com/) for creating the 3DSAV class.
-More student projects here: [http://3dsav.blogspot.com/](http://3dsav.blogspot.com/)
+## Thanks
+
+Thanks to [Kyle McDonald](https://kylemcdonald.net/) and [Zach Lieberman](http://zach.li/) for creating the 3DSAV class. More student projects here: [https://3dsav.blogspot.com/](https://3dsav.blogspot.com/)
 
 Thanks to Wagner for the music.
 

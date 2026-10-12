@@ -1,22 +1,21 @@
 #pragma once
 
-#include "stdio.h"
-#include "ofMain.h"
 #include "Mover.h"
+#include "ofMain.h"
+#include "stdio.h"
 
 class Toast : public Mover {
 public:
-	
 	Toast();
-    virtual void update();
-    virtual void draw();
-    
-    int popStage;
-    
-    void updatePops();
-    void popToast();
-    
+	virtual void update();
+	virtual void draw();
+
+	int popStage;
+
+	void updatePops();
+	void popToast();
+
 private:
-    ofImage toastGraphic;
-    ofImage *toastPopImage;
+	ofImage toastGraphic;
+	ofImage * toastPopImage;
 };

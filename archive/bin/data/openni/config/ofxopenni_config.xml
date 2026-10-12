@@ -26,10 +26,8 @@
 				<Mirror on="true"/>
 			</Configuration>
 		</Node>
-		
 		<!-- ofxUserGenerator -->
-		<Node type="User" />
-        
+		<Node type="User" />        
         <!-- ofxGestureGenerator -->
 		<Node type="Gesture" />
 		<Node type="Hands" />

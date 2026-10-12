@@ -1,13 +1,22 @@
-# build files
-build/
+# Git Ignore
+# Also used by CSpell, Stylelint, and ESLint
 
-# mac stuff
+# @kitschpatrol/repo-config boilerplate
+.astro/
 .DS_Store
-Icon?
+.env
+.env.*
+!.env.example
+.eslint-config-inspector
+.svelte-kit/
+{tmp,temp}/
+**/*.min.js
+/scratch/
+bower_components/
+build/
+coverage/
+dist/
+node_modules/
+vendor/
 
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
+# Customizations
