@@ -24,7 +24,10 @@ export default defineConfig(({ command, isPreview }) => ({
 				name: 'flapping-toasters',
 				observability: { enabled: true },
 				preview_urls: false,
-				routes: [{ pattern: `frontiernerds.com${base}*`, zone_name: 'frontiernerds.com' }],
+				routes: [
+					{ pattern: `frontiernerds.com${base}`, zone_name: 'frontiernerds.com' },
+					{ pattern: `frontiernerds.com${base}/*`, zone_name: 'frontiernerds.com' },
+				],
 				workers_dev: false,
 			},
 			/* eslint-enable ts/naming-convention */
