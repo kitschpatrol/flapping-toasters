@@ -1,0 +1,24 @@
+name: Set GitHub Metadata
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Set GitHub Metadata
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Sync Package info to GitHub
+        uses: kitschpatrol/github-action-repo-sync@5e05dd60f1f303764fee57b0d51ce5021b06e8d7 # v5.0.7
+        with:
+          TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

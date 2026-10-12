@@ -1,0 +1,59 @@
+{
+	"name": "flapping-toasters",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Embody a flying toaster.",
+	"keywords": [
+		"movenet",
+		"pose",
+		"screensaver",
+		"toaster"
+	],
+	"homepage": "https://frontiernerds.com/flapping-toasters",
+	"bugs": "https://github.com/kitschpatrol/flapping-toasters/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kitschpatrol/flapping-toasters.git"
+	},
+	"license": "UNLICENSED",
+	"author": {
+		"name": "Eric Mika",
+		"email": "eric@ericmika.com"
+	},
+	"type": "module",
+	"scripts": {
+		"build": "vite build && tsx ./scripts/version.ts > ./dist/version.json",
+		"clean-deep": "rm -f pnpm-lock.yaml && git clean -fdX -e !.claude/",
+		"dev": "poptab && vite",
+		"fix": "ksc fix",
+		"lint": "ksc lint",
+		"prepare": "skills experimental_sync -y -f",
+		"preview": "pnpm build && poptab && vite preview",
+		"release": "bumpp --commit 'Release: %s' && pnpm build && wrangler deploy",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@tensorflow-models/pose-detection": "^2.1.3",
+		"@tensorflow/tfjs": "^4.22.0",
+		"pixi.js": "^8.22.0",
+		"tweakpane": "^4.0.5"
+	},
+	"devDependencies": {
+		"@cloudflare/vite-plugin": "^1.63.1",
+		"@kitschpatrol/shared-config": "^8.13.1",
+		"@tweakpane/core": "^2.0.5",
+		"@types/node": "~24.13.6",
+		"bumpp": "^12.3.0",
+		"poptab": "^1.2.2",
+		"skills": "^1.7.0",
+		"tsx": "^4.23.15",
+		"typescript": "~6.0.3",
+		"vite": "^8.3.3",
+		"vitest": "^5.0.3",
+		"wrangler": "^4.149.0"
+	},
+	"packageManager": "pnpm@12.10.1",
+	"engines": {
+		"node": "^24.16.0 || >=26.3.0"
+	}
+}

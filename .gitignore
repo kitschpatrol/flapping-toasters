@@ -2,13 +2,18 @@
 # Also used by CSpell, Stylelint, and ESLint
 
 # @kitschpatrol/repo-config boilerplate
+!.env.example
+.agents/
 .astro/
+.claude/
 .DS_Store
 .env
 .env.*
-!.env.example
 .eslint-config-inspector
+.pnpm-store/
 .svelte-kit/
+.vitest/
+.worktrees/
 {tmp,temp}/
 **/*.min.js
 /scratch/
@@ -17,6 +22,9 @@ build/
 coverage/
 dist/
 node_modules/
+skills-lock.json
 vendor/
 
 # Customizations
+.vite/
+.wrangler/

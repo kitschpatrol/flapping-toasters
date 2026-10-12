@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/png" href="/mediumToast.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Flapping Toasters</title>
+	</head>
+	<body>
+		<div id="app"></div>
+		<div id="control-panel"></div>
+		<div id="camera-preview-frame" hidden>
+			<div id="camera-placeholder">
+				<svg
+					id="camera-icon"
+					role="img"
+					aria-label="Waiting for camera"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M9 5 7 8H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-3l-2-3Z"
+					/>
+					<circle cx="12" cy="13" r="3" />
+					<path id="camera-icon-slash" d="m3 3 18 18" hidden />
+				</svg>
+				<div id="camera-help" role="status" hidden>
+					<p id="camera-help-message"></p>
+					<a
+						id="camera-permission-link"
+						aria-label="How to allow camera access (opens in a new tab)"
+						href="https://support.google.com/chrome/answer/2693767"
+						target="_blank"
+						rel="noopener noreferrer"
+						hidden
+						>How to allow camera access
+						<svg
+							viewBox="0 0 14 14"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.2"
+							aria-hidden="true"
+						>
+							<path d="M8 1h5v5M13 1 6 8M5 3H1v10h10V9" />
+						</svg>
+					</a>
+				</div>
+			</div>
+			<canvas id="camera-preview" width="640" height="480" hidden></canvas>
+		</div>
+		<dialog id="startup-dialog" aria-labelledby="dialog-title">
+			<h1 id="dialog-title" tabindex="-1" autofocus>Flapping Toasters</h1>
+			<div id="tracking-status" role="status">
+				<span id="tracking-status-text">Loading</span>
+				<div id="tracking-spinner" aria-hidden="true"></div>
+			</div>
+			<button id="startup-retry" type="button" hidden>Retry camera tracking</button>
+			<p>
+				This is a port of the original 2011 version of Flapping Toasters for the web. It’s an
+				interactive homage to
+				<a
+					href="https://en.wikipedia.org/wiki/After_Dark_%28software%29"
+					target="_blank"
+					rel="noopener noreferrer"
+					>After Dark’s</a
+				>
+				Flying Toasters screensaver.
+			</p>
+			<p>
+				To start, allow access to your webcam and take a few steps back so that your upper body is
+				visible to the camera.
+			</p>
+			<p>
+				Then, <strong>flap your arms</strong> to fly higher, <strong>clap</strong> to release toast,
+				and <strong>tilt your arms</strong> to do a barrel roll.
+			</p>
+			<p>
+				<a
+					href="https://frontiernerds.com/projects/flapping-toasters"
+					target="_blank"
+					rel="noopener noreferrer"
+					>Read more</a
+				>
+				about the original project.
+			</p>
+		</dialog>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>

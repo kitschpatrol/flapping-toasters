@@ -1,0 +1,272 @@
+:root {
+	font-family: 'SF Mono', Monaco, Inconsolata, monospace;
+	font-weight: 400;
+	font-synthesis: none;
+	line-height: 1.5;
+	color: rgb(255 255 255 / 87%);
+	text-rendering: optimizelegibility;
+	color-scheme: dark;
+	background-color: #000;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	overflow: hidden;
+	margin: 0;
+	background: #000;
+}
+
+#app canvas {
+	display: block;
+	image-rendering: pixelated;
+}
+
+[hidden] {
+	display: none;
+}
+
+#startup-dialog[open] {
+	position: fixed;
+	z-index: 1;
+	inset: 50% auto auto 50%;
+	transform: translate(-50%, -50%);
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	box-sizing: border-box;
+	width: min(38rem, calc(100vw - 2rem));
+	max-height: calc(100dvh - 2rem);
+	margin: 0;
+	padding: 24px;
+	border: 1px solid rgb(255 255 255 / 30%);
+	border-radius: 6px;
+	font-family: system-ui, sans-serif;
+	color: inherit;
+	text-align: left;
+	background: rgb(0 0 0 / 90%);
+}
+
+#startup-dialog > * {
+	flex-shrink: 0;
+}
+
+#tracking-status {
+	display: grid;
+	grid-auto-flow: column;
+	flex-shrink: 0;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: center;
+	min-height: 40px;
+	font-style: italic;
+	text-align: center;
+}
+
+#startup-retry {
+	cursor: pointer;
+	flex-shrink: 0;
+	align-self: center;
+	padding: 0.5rem 1rem;
+	font: inherit;
+}
+
+#dialog-title {
+	margin: 0;
+	font-size: clamp(1.25rem, 4vw, 2rem);
+	font-weight: 600;
+	line-height: 1;
+	text-align: center;
+	outline: none;
+}
+
+#tracking-spinner {
+	flex-shrink: 0;
+	box-sizing: border-box;
+	width: 24px;
+	height: 24px;
+	border: 2px solid rgb(255 255 255 / 25%);
+	border-top-color: currentcolor;
+	border-radius: 50%;
+}
+
+@keyframes tracking-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	#tracking-spinner {
+		animation: tracking-spin 1s linear infinite;
+	}
+}
+
+#startup-dialog p {
+	margin: 0;
+}
+
+#startup-dialog a {
+	color: inherit;
+	text-underline-offset: 3px;
+}
+
+#control-panel {
+	scrollbar-width: none;
+	position: fixed;
+	z-index: 2;
+	right: 8px;
+	bottom: 8px;
+	overflow: auto;
+	width: min(340px, calc(100vw - 16px));
+	max-height: calc(100dvh - 16px);
+}
+
+#control-panel::-webkit-scrollbar {
+	display: none;
+}
+
+#control-panel > .tp-rotv:not(.tp-v-hidden) {
+	display: flex;
+	flex-direction: column;
+	max-height: inherit;
+}
+
+#control-panel > .tp-rotv > .tp-rotv_b {
+	flex-shrink: 0;
+}
+
+/* Scroll the controls without moving the camera out of view. */
+#control-panel > .tp-rotv > .tp-rotv_c {
+	overflow: auto;
+	min-height: 0;
+}
+
+#camera-preview-frame {
+	position: relative;
+	overflow: hidden;
+	flex-shrink: 0;
+	box-sizing: border-box;
+	aspect-ratio: 4 / 3;
+	width: calc(100% - 16px);
+	margin: 8px;
+	border: 1px solid rgb(255 255 255 / 30%);
+	border-radius: 4px;
+	background: #3c3e43;
+}
+
+#camera-preview,
+#camera-placeholder {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#camera-placeholder {
+	color: rgb(255 255 255 / 45%);
+}
+
+#camera-placeholder:not([hidden]) {
+	display: grid;
+	place-items: center;
+}
+
+#camera-icon {
+	width: 36px;
+	height: 36px;
+}
+
+#camera-help {
+	pointer-events: none;
+	position: absolute;
+	inset: 0;
+	font-size: 11px;
+	line-height: 1.4;
+	color: rgb(255 255 255 / 75%);
+	text-align: center;
+}
+
+#camera-help-message {
+	position: absolute;
+	top: calc(25% - 9px);
+	right: 16px;
+	left: 16px;
+	transform: translateY(-50%);
+	margin: 0;
+}
+
+#camera-permission-link {
+	pointer-events: auto;
+	position: absolute;
+	top: calc(75% + 9px);
+	right: 16px;
+	left: 16px;
+	transform: translateY(-50%);
+	color: inherit;
+	text-underline-offset: 2px;
+}
+
+#camera-permission-link svg {
+	width: 12px;
+	height: 12px;
+	margin-left: 3px;
+	vertical-align: -1px;
+}
+
+/* Keep the camera in view while the instructions scroll independently. */
+@media (width <= 700px), (height <= 600px) {
+	body:has(#startup-dialog[open]) {
+		display: grid;
+		grid-template-rows: minmax(0, 1fr) auto;
+		gap: 8px;
+		box-sizing: border-box;
+		height: 100dvh;
+		padding: 8px;
+	}
+
+	body:has(#startup-dialog[open]) #app {
+		position: fixed;
+		inset: 0;
+	}
+
+	#startup-dialog[open] {
+		position: relative;
+		inset: auto;
+		transform: none;
+		grid-area: 1 / 1;
+		align-self: center;
+		width: 100%;
+		max-height: 100%;
+		padding: 20px;
+	}
+
+	body:has(#startup-dialog[open]) #control-panel {
+		position: relative;
+		right: auto;
+		bottom: auto;
+		grid-area: 2 / 1;
+		justify-self: center;
+		width: min(100%, clamp(200px, 36dvh, 300px));
+		max-height: max(240px, 40dvh);
+	}
+}
+
+@media (height <= 600px) and (orientation: landscape) {
+	#control-panel {
+		width: clamp(200px, 32vw, 300px);
+	}
+
+	body:has(#startup-dialog[open]) {
+		grid-template-columns: minmax(0, 1fr) clamp(200px, 32vw, 300px);
+		grid-template-rows: minmax(0, 1fr);
+	}
+
+	body:has(#startup-dialog[open]) #control-panel {
+		grid-area: 1 / 2;
+		align-self: center;
+		width: 100%;
+		max-height: calc(100dvh - 16px);
+	}
+}

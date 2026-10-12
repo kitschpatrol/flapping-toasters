@@ -1,0 +1,56 @@
+name: Create GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*.[0-9]*.[0-9]*'
+      - '[0-9]*.[0-9]*.[0-9]*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Confirm Tag Is on the Default Branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if ! git branch -r --contains "tags/${GITHUB_REF_NAME}" | tr -d ' ' | grep -qxF "origin/${DEFAULT_BRANCH}"; then
+            echo "::error::Tag ${GITHUB_REF_NAME} is not on the ${DEFAULT_BRANCH} branch, refusing to release"
+            exit 1
+          fi
+
+      - name: Release Notes
+        id: release-notes
+        uses: kitschpatrol/github-action-release-changelog@12279a22cf9d0b432dca8ff189d82ad0dd393345 # v2.0.9
+
+      - name: Release
+        id: release
+        uses: kitschpatrol/github-action-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body: |
+            ${{ steps.release-notes.outputs.changelog }}
+          files: |
+            readme.md
+            README.md
+            LICENSE
+            license.txt
+            CHANGELOG
+            CHANGELOG.md
+            changelog.md
