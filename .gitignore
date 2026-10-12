@@ -28,3 +28,4 @@ vendor/
 # Customizations
 .vite/
 .wrangler/
+/skills-lock.json

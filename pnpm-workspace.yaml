@@ -1,8 +1,10 @@
 allowBuilds:
   core-js: true
+  esbuild: true
   ml5: true
   preact: true
   unrs-resolver: true
+  workerd: true
 minimumReleaseAgeExclude:
   - '@kitschpatrol/cspell-config@8.13.1'
   - '@kitschpatrol/eslint-config@8.13.1'
