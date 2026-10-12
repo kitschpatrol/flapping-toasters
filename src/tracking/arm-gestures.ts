@@ -8,7 +8,9 @@ export type UpperBodyPose = {
 }
 
 export type UpperBodyObservation = Omit<UpperBodyPose, 'leftHand' | 'rightHand'> & {
+	leftElbow?: ArmPoint | undefined
 	leftHand: ArmPoint | undefined
+	rightElbow?: ArmPoint | undefined
 	rightHand: ArmPoint | undefined
 }
 
@@ -41,7 +43,7 @@ const clapApproachWindow = 250
  * Maps the current arm pose to wings and detects deliberate, repeatable
  * downstrokes and two-handed claps.
  */
-export class ArmGestures {
+class HandGestures {
 	private armed = false
 	private bottom = 0
 	private clapApproachAt = -Infinity
@@ -129,7 +131,7 @@ export class ArmGestures {
 			this.right = right
 			this.top = (left.y + right.y) / 2
 			this.bottom = this.top
-			this.armed = this.top <= 0.2
+			this.armed = true
 		} else {
 			// Ignore isolated implausible jumps instead of turning a tracking glitch into lift.
 			const maximumJump = 0.2 + (12 * elapsed) / 1000
@@ -160,7 +162,7 @@ export class ArmGestures {
 			// movement into a synthetic downstroke.
 			this.top = height
 			this.bottom = height
-			this.armed = height <= 0.2
+			this.armed = true
 			this.motionInterrupted = false
 		} else if (!isFirstObservation) {
 			const previousHeight = (previousLeft.y + previousRight.y) / 2
@@ -272,8 +274,9 @@ export class ArmGestures {
 		travel: number,
 		handsApart: boolean,
 	): boolean {
+		// A real upstroke rearms at any height, including bent arms below the shoulders.
 		this.bottom = Math.max(this.bottom, height)
-		if (!this.armed && this.bottom - height >= travel && height <= 0.2) {
+		if (!this.armed && this.bottom - height >= travel) {
 			this.armed = true
 			this.top = height
 		}
@@ -348,6 +351,73 @@ export class ArmGestures {
 		if (this.predictedClapAt !== undefined && timestamp >= this.predictedClapAt) {
 			result.didClap = true
 			this.finishClap()
+		}
+
+		return result
+	}
+}
+
+/** Whether a player has a visible pair of joints that can control the wings. */
+export function hasTrackedArms(pose: UpperBodyObservation): boolean {
+	return (
+		(pose.leftHand !== undefined && pose.rightHand !== undefined) ||
+		(pose.leftElbow !== undefined && pose.rightElbow !== undefined)
+	)
+}
+
+/** Uses upper-arm movement when close-up wrists leave the camera frame. */
+export class ArmGestures {
+	private readonly elbows = new HandGestures()
+	private lastFlap = -Infinity
+	private readonly wrists = new HandGestures()
+
+	public reset(): void {
+		this.wrists.reset()
+		this.elbows.reset()
+		this.lastFlap = -Infinity
+	}
+
+	public update(
+		pose: UpperBodyObservation,
+		timestamp: number,
+		settings: GestureSettings,
+	): GestureResult {
+		const result = this.wrists.update(pose, timestamp, settings)
+		if (
+			(pose.leftHand === undefined || pose.rightHand === undefined) &&
+			pose.leftElbow !== undefined &&
+			pose.rightElbow !== undefined
+		) {
+			// Upper arms travel roughly half as far as extended hands. Keep their
+			// history separate so switching joints never invents a downstroke.
+			const extend = (elbow: ArmPoint, shoulder: ArmPoint): ArmPoint => ({
+				x: shoulder.x + (elbow.x - shoulder.x) * 2,
+				y: shoulder.y + (elbow.y - shoulder.y) * 2,
+			})
+			const fallback = this.elbows.update(
+				{
+					leftHand: extend(pose.leftElbow, pose.leftShoulder),
+					leftShoulder: pose.leftShoulder,
+					rightHand: extend(pose.rightElbow, pose.rightShoulder),
+					rightShoulder: pose.rightShoulder,
+				},
+				timestamp,
+				settings,
+			)
+			result.didFlap = fallback.didFlap
+			result.wingPosition = fallback.wingPosition
+			result.rollAngle = fallback.rollAngle
+			// Claps still require actual wrist motion, including a previously
+			// observed approach into a brief chest occlusion.
+		} else {
+			this.elbows.reset()
+		}
+
+		if (result.didFlap) {
+			result.didFlap = timestamp - this.lastFlap >= minimumFlapInterval
+			if (result.didFlap) {
+				this.lastFlap = timestamp
+			}
 		}
 
 		return result

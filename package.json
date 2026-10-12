@@ -20,9 +20,16 @@
 		"name": "Eric Mika",
 		"email": "eric@ericmika.com"
 	},
+	"contributors": [
+		{
+			"name": "Michael Edgcumbe",
+			"email": "voxels@gmail.com",
+			"url": "https://voxels.github.io"
+		}
+	],
 	"type": "module",
 	"scripts": {
-		"build": "vite build && tsx ./scripts/version.ts > ./dist/version.json",
+		"build": "vite build && tsx ./scripts/version.ts > ./dist/version.json && tsx ./scripts/prepare-assets.ts",
 		"clean-deep": "rm -f pnpm-lock.yaml && git clean -fdX -e !.claude/",
 		"dev": "poptab && vite",
 		"fix": "ksc fix",

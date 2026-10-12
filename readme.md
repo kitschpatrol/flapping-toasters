@@ -2,7 +2,6 @@
 
 <!-- badges -->
 
-[![License: UNLICENSED](https://img.shields.io/badge/License-UNLICENSED-yellow.svg)](https://opensource.org/license/mit)
 [![CI](https://github.com/kitschpatrol/flapping-toasters/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/flapping-toasters/actions/workflows/ci.yml)
 
 <!-- /badges -->

@@ -6,6 +6,7 @@ import { Flapper } from './game/flapper'
 import { SoundBoard } from './game/sound-board'
 import { Toast } from './game/toast'
 import { settings } from './settings'
+import { hasTrackedArms } from './tracking/arm-gestures'
 import { PlayerPresence } from './tracking/player-presence'
 import { PoseTracker } from './tracking/pose-tracker'
 import { getCameraPermissionHelpUrl } from './ui/camera-permission-help'
@@ -239,10 +240,9 @@ async function initializeScene(onFlap: () => void): Promise<{
 			const updatedFlappers = new Set<Flapper>()
 			for (const pair of players) {
 				// Partial observations can retain a player, but cannot take over another toaster.
-				const flapper =
-					pair.leftHand === undefined || pair.rightHand === undefined
-						? flapperByPoseId.get(pair.id)
-						: flapperForPose(pair.id)
+				const flapper = hasTrackedArms(pair)
+					? flapperForPose(pair.id)
+					: flapperByPoseId.get(pair.id)
 				flapper?.updatePose(pair, lastPoseTimestamp)
 				if (flapper !== undefined) {
 					updatedFlappers.add(flapper)

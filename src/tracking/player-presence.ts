@@ -1,5 +1,7 @@
-import type { Keypoint, Pose } from '@tensorflow-models/pose-detection'
+import type { Pose } from '@tensorflow-models/pose-detection'
 import { settings } from '../settings'
+import { hasTrackedArms } from './arm-gestures'
+import { getTrackedBodies } from './tracked-body'
 
 const entryHoldTime = 750
 const maxObservationGap = 2000
@@ -17,8 +19,15 @@ export class PlayerPresence {
 	public update(poses: Pose[], width: number, height: number, now: number): boolean {
 		const candidates = new Map<number, { firstSeen: number; frames: number; lastSeen: number }>()
 		let isReady = false
-		for (const pose of poses) {
-			if (pose.id === undefined || !this.isInRange(pose, width, height)) {
+		const bodies = getTrackedBodies(
+			poses,
+			width,
+			height,
+			settings.minKeypointScore,
+			Math.max(settings.minPlayerShoulderWidth, settings.minTrackingShoulderWidth),
+		)
+		for (const pose of bodies) {
+			if (!hasTrackedArms(pose)) {
 				continue
 			}
 
@@ -35,37 +44,5 @@ export class PlayerPresence {
 
 		this.candidates = candidates
 		return isReady
-	}
-
-	private isInRange(pose: Pose, width: number, height: number): boolean {
-		if (width <= 0 || height <= 0) {
-			return false
-		}
-
-		const leftShoulder = pose.keypoints.find((point) => point.name === 'left_shoulder')
-		const rightShoulder = pose.keypoints.find((point) => point.name === 'right_shoulder')
-		const leftWrist = pose.keypoints.find((point) => point.name === 'left_wrist')
-		const rightWrist = pose.keypoints.find((point) => point.name === 'right_wrist')
-		const isVisible = (point: Keypoint | undefined): point is Keypoint =>
-			point !== undefined &&
-			(point.score ?? 0) >= Math.max(0.5, settings.minKeypointScore) &&
-			point.x >= 0 &&
-			point.x <= width &&
-			point.y >= 0 &&
-			point.y <= height
-		if (
-			!isVisible(leftShoulder) ||
-			!isVisible(rightShoulder) ||
-			!isVisible(leftWrist) ||
-			!isVisible(rightWrist)
-		) {
-			return false
-		}
-
-		// Shoulder span estimates proximity without changing when the player flaps their arms.
-		return (
-			Math.hypot(leftShoulder.x - rightShoulder.x, leftShoulder.y - rightShoulder.y) / width >=
-			settings.minPlayerShoulderWidth
-		)
 	}
 }

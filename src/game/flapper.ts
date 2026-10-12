@@ -4,7 +4,7 @@ import type { UpperBodyObservation } from '../tracking/arm-gestures'
 import type { GameAssets, ImageKey } from './assets'
 import type { SoundBoard } from './sound-board'
 import { settings } from '../settings'
-import { ArmGestures } from '../tracking/arm-gestures'
+import { ArmGestures, hasTrackedArms } from '../tracking/arm-gestures'
 import { Mover } from './mover'
 import { Toast } from './toast'
 
@@ -108,13 +108,13 @@ export class Flapper extends Mover {
 	}
 
 	/**
-	 * Keeps gesture history through brief wrist occlusion while shoulders remain
-	 * tracked.
+	 * Keeps gesture history through brief wrist occlusion and accepts visible
+	 * elbows for close-up wing control.
 	 */
 	public updatePose(pose: UpperBodyObservation, timestamp: number): void {
 		this.isActive = true
 		this.isParked = false
-		if (pose.leftHand !== undefined && pose.rightHand !== undefined) {
+		if (hasTrackedArms(pose)) {
 			this.timeLastHandUpdate = this.millis
 		}
 

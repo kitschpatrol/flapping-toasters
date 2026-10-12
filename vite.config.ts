@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 
 const base = '/flapping-toasters'
 
-export default defineConfig({
+export default defineConfig(({ command, isPreview }) => ({
 	base,
 	build: {
 		// TensorFlow.js is a single large runtime that can't usefully be split further
@@ -15,7 +15,8 @@ export default defineConfig({
 			/* eslint-disable ts/naming-convention -- Cloudflare's configuration requires these property names. */
 			config: {
 				assets: {
-					base_path: base,
+					// Development serves source files; builds use a physical subdirectory.
+					...(command === 'serve' && !isPreview && { base_path: base }),
 					html_handling: 'drop-trailing-slash',
 					not_found_handling: 'none',
 				},
@@ -47,4 +48,4 @@ export default defineConfig({
 	server: {
 		open: process.env.CI === undefined,
 	},
-})
+}))
