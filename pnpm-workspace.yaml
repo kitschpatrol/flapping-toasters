@@ -1,31 +1,8 @@
 allowBuilds:
-  core-js: true
+  core-js: false
   esbuild: true
-  ml5: true
-  preact: true
   unrs-resolver: true
   workerd: true
-minimumReleaseAgeExclude:
-  - '@kitschpatrol/cspell-config@8.14.0'
-  - '@kitschpatrol/eslint-config@8.14.0'
-  - '@kitschpatrol/knip-config@8.14.0'
-  - '@kitschpatrol/mdat-config@8.14.0'
-  - '@kitschpatrol/prettier-config@8.14.0'
-  - '@kitschpatrol/remark-config@8.14.0'
-  - '@kitschpatrol/repo-config@8.14.0'
-  - '@kitschpatrol/shared-config@8.14.0'
-  - '@kitschpatrol/stylelint-config@8.14.0'
-  - '@kitschpatrol/typescript-config@8.14.0'
-  - mdat@3.6.6
-  - 'poptab@1.2.2'
-  - remark-mdat@3.1.2
-packageExtensions:
-  # Remove once eslint-mdx declares its tslib import as a dependency. Without this it resolves the
-  # hoisted tslib@2.4.0 from @tensorflow-models/pose-detection, which lacks
-  # __rewriteRelativeImportExtension.
-  eslint-mdx@3:
-    dependencies:
-      tslib: ^2.8.0
 peerDependencyRules:
   allowedVersions:
     # Remove once the installed version declares ESLint 10 support.
