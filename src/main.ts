@@ -36,6 +36,9 @@ async function initializeScene(onFlap: () => void): Promise<{
 	const appContainer = requireElement(HTMLDivElement, '#app')
 	const previewCanvas = requireElement(HTMLCanvasElement, '#camera-preview')
 	const previewFrame = requireElement(HTMLDivElement, '#camera-preview-frame')
+	const positionGuide = requireElement(HTMLDivElement, '#camera-position-guide')
+	const positionSilhouette = requireElement(SVGSVGElement, '#camera-position-silhouette')
+	const positionBody = requireElement(SVGPathElement, '#camera-position-body')
 	const cameraPlaceholder = requireElement(HTMLDivElement, '#camera-placeholder')
 	const cameraIcon = requireElement(SVGSVGElement, '#camera-icon')
 	const cameraSlash = requireElement(SVGPathElement, '#camera-icon-slash')
@@ -145,6 +148,19 @@ async function initializeScene(onFlap: () => void): Promise<{
 	pane.element.firstElementChild?.after(previewFrame)
 
 	const previewContext = previewCanvas.getContext('2d') ?? undefined
+	const guidePresence = new PlayerPresence()
+	const guideReappearDelay = 1500
+	let lastGuidePoseTimestamp = 0
+	let timeLastGuidePlayerReady = -Infinity
+
+	function setPositionGuideVisible(visible: boolean): void {
+		if (positionGuide.dataset.visible === String(visible)) {
+			return
+		}
+
+		positionGuide.dataset.visible = String(visible)
+		positionGuide.setAttribute('aria-hidden', String(!visible))
+	}
 
 	function syncPreviewVisibility(): void {
 		previewFrame.hidden = !settings.shouldShowCameraPreview || !pane.expanded || pane.hidden
@@ -153,6 +169,31 @@ async function initializeScene(onFlap: () => void): Promise<{
 			cameraState === 'ready' && poseTracker.video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
 		previewCanvas.hidden = previewFrame.hidden || !isCameraReady
 		cameraPlaceholder.hidden = isCameraReady
+		if (isCameraReady) {
+			const now = performance.now()
+			if (poseTracker.poseTimestamp !== lastGuidePoseTimestamp) {
+				lastGuidePoseTimestamp = poseTracker.poseTimestamp
+				if (
+					guidePresence.update(
+						poseTracker.getPoses(),
+						poseTracker.video.videoWidth,
+						poseTracker.video.videoHeight,
+						now,
+					)
+				) {
+					timeLastGuidePlayerReady = now
+				}
+			}
+
+			// Stable entry hides the guide; brief claps or tracking gaps do not bring it back.
+			setPositionGuideVisible(now - timeLastGuidePlayerReady >= guideReappearDelay)
+		} else {
+			guidePresence.reset()
+			lastGuidePoseTimestamp = 0
+			timeLastGuidePlayerReady = -Infinity
+			setPositionGuideVisible(false)
+		}
+
 		if (previewFrame.dataset.cameraState === cameraState) {
 			return
 		}
@@ -190,6 +231,21 @@ async function initializeScene(onFlap: () => void): Promise<{
 			return
 		}
 
+		// Keep the guide inside the camera image, including letterboxed previews.
+		positionGuide.style.left = `${(viewport.x / width) * 100}%`
+		positionGuide.style.top = `${(viewport.y / height) * 100}%`
+		positionGuide.style.width = `${(viewport.width / width) * 100}%`
+		positionGuide.style.height = `${(viewport.height / height) * 100}%`
+		// Match shoulder size across camera aspect ratios.
+		const guideHeight = (640 * video.videoHeight) / video.videoWidth
+		const guideTop = Math.min(0, (480 - guideHeight) / 2)
+		positionSilhouette.setAttribute('viewBox', `0 ${guideTop} 640 ${guideHeight}`)
+		// Extend the waist beyond the camera image so the preview crops the torso at its bottom edge.
+		const guideBottom = guideTop + guideHeight + 4
+		positionBody.setAttribute(
+			'd',
+			`M305 101v11h-43c-12 0-19 5-31 6L67 123c-11 0-17 5-17 13s6 13 17 13l177-1 16 112L244 ${guideBottom}h152L380 260l16-112 177 1c11 0 17-5 17-13s-6-13-17-13l-164-5c-12-1-19-6-31-6h-43v-11Z`,
+		)
 		// Mirror to match the game's coordinate space
 		context.save()
 		context.translate(width, 0)

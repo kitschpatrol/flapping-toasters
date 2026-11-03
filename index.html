@@ -51,6 +51,20 @@
 				</div>
 			</div>
 			<canvas id="camera-preview" width="640" height="480" hidden></canvas>
+			<div id="camera-position-guide" data-visible="false" aria-hidden="true">
+				<svg
+					id="camera-position-silhouette"
+					viewBox="0 0 640 480"
+					fill="currentColor"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<circle cx="320" cy="62" r="30" />
+					<path id="camera-position-body" />
+				</svg>
+			</div>
 		</div>
 		<dialog id="startup-dialog" aria-labelledby="dialog-title">
 			<h1 id="dialog-title" tabindex="-1" autofocus>Flapping Toasters</h1>
