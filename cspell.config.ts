@@ -7,6 +7,7 @@ export default cspellConfig({
 		'archive/bin/data/openni/**',
 		'archive/openFrameworks-Info.plist',
 		'public/movenet-lightning/**',
+		'**/changelog.md',
 	],
-	words: ['dsav', 'facemesh', 'keypoints', 'openni', 'tfjs'],
+	words: ['chagent', 'dsav', 'facemesh', 'keypoints', 'openni', 'tfjs'],
 })

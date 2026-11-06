@@ -1,6 +1,7 @@
 import { eslintConfig } from '@kitschpatrol/eslint-config'
 
 export default eslintConfig({
+	ignores: ['**/changelog.md'],
 	ts: {
 		overrides: {
 			// Browser-only Vite app; navigator is the browser API, not the experimental Node builtin
