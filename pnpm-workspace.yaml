@@ -14,6 +14,8 @@ peerDependencyRules:
 permissions:
   '@kitschpatrol/shared-config':
     skills: true
+  modern-web-guidance:
+    skills: true
   pixi.js:
     skills: true
 publicHoistPattern:
